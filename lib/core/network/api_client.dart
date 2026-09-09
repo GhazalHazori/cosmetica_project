@@ -33,7 +33,23 @@ class ApiClient {
     );
   }
 
-  // Additional methods (post, put, delete, etc.) can be added as needed.
+  Future<Response<T>> post<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) {
+    return _dio.post<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+    );
+  }
+
+  // Additional methods (put, delete, etc.) can be added as needed.
 }
 
 

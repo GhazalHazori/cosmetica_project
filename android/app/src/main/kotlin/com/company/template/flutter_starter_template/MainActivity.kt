@@ -1,4 +1,4 @@
-package com.company.template.flutter_starter_template
+package com.company.template.cosmetica_project
 
 import io.flutter.embedding.android.FlutterActivity
 

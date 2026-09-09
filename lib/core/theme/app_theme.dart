@@ -103,7 +103,7 @@ class AppTheme {
         thickness: 1,
         space: AppSpacing.md,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: colors.surface,
         margin: const EdgeInsets.all(AppSpacing.md),
         elevation: AppSpacing.elevationSm,

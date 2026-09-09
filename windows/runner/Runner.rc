@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.company.template" "\0"
-            VALUE "FileDescription", "flutter_starter_template" "\0"
+            VALUE "FileDescription", "cosmetica_project" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_starter_template" "\0"
+            VALUE "InternalName", "cosmetica_project" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.company.template. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_starter_template.exe" "\0"
-            VALUE "ProductName", "flutter_starter_template" "\0"
+            VALUE "OriginalFilename", "cosmetica_project.exe" "\0"
+            VALUE "ProductName", "cosmetica_project" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           builder: (context, themeState) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'Flutter Clean Starter',
+              title: 'Cosmetica',
               locale: localeState.locale,
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: AppLocalizations.localizationsDelegates,

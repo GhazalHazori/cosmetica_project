@@ -18,6 +18,8 @@ class SampleCubit extends Cubit<SampleState> {
 
     final result = await _getSamplesUseCase();
 
+    if (isClosed) return;
+
     result.fold(
       (failure) => emit(
         state.copyWith(

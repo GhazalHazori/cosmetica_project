@@ -8,8 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_clean_starter/main.dart';
-import 'package:flutter_clean_starter/di/injection_container.dart' as di;
+import 'package:cosmetica_project/main.dart';
+import 'package:cosmetica_project/di/injection_container.dart' as di;
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
