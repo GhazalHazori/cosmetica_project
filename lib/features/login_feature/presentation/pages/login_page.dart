@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../di/injection_container.dart';
 import '../cubit/login_cubit.dart';
+import '../widgets/account_type_bottom_sheet.dart';
 
 class AppColors {
   static const Color primaryText = Color(0xFF1E2832);
@@ -206,8 +207,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        TextButton(
-                          onPressed: () {},
+                         TextButton(
+                           onPressed: () => showAccountTypeBottomSheet(context),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

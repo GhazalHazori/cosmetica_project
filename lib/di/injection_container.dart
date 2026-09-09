@@ -1,17 +1,33 @@
 import 'package:get_it/get_it.dart';
 
+import '../core/cubits/bottom_nav_cubit.dart';
 import '../core/localization/localization_cubit.dart';
 import '../core/theme/theme_cubit.dart';
+import '../features/business_signup_feature/data/datasources/business_signup_remote_data_source.dart';
+import '../features/business_signup_feature/data/repositories/business_signup_repository_impl.dart';
+import '../features/business_signup_feature/domain/repositories/business_signup_repository.dart';
+import '../features/business_signup_feature/domain/usecases/business_signup_use_case.dart';
+import '../features/business_signup_feature/presentation/cubit/business_signup_cubit.dart';
 import '../features/login_feature/data/datasources/login_remote_data_source.dart';
 import '../features/login_feature/data/repositories/login_repository_impl.dart';
 import '../features/login_feature/domain/repositories/login_repository.dart';
 import '../features/login_feature/domain/usecases/login_use_case.dart';
 import '../features/login_feature/presentation/cubit/login_cubit.dart';
+import '../features/otp_verification_feature/data/datasources/otp_verification_remote_data_source.dart';
+import '../features/otp_verification_feature/data/repositories/otp_verification_repository_impl.dart';
+import '../features/otp_verification_feature/domain/repositories/otp_verification_repository.dart';
+import '../features/otp_verification_feature/domain/usecases/otp_verification_use_case.dart';
+import '../features/otp_verification_feature/presentation/cubit/otp_verification_cubit.dart';
 import '../features/sample_feature/data/datasources/sample_remote_data_source.dart';
 import '../features/sample_feature/data/repositories/sample_repository_impl.dart';
 import '../features/sample_feature/domain/repositories/sample_repository.dart';
 import '../features/sample_feature/domain/usecases/get_samples_use_case.dart';
 import '../features/sample_feature/presentation/cubit/sample_cubit.dart';
+import '../features/signup_feature/data/datasources/signup_remote_data_source.dart';
+import '../features/signup_feature/data/repositories/signup_repository_impl.dart';
+import '../features/signup_feature/domain/repositories/signup_repository.dart';
+import '../features/signup_feature/domain/usecases/signup_use_case.dart';
+import '../features/signup_feature/presentation/cubit/signup_cubit.dart';
 import '../features/splash_feature/presentation/cubit/splash_cubit.dart';
 
 final sl = GetIt.instance;
@@ -20,6 +36,7 @@ Future<void> init() async {
   // Core
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
   sl.registerLazySingleton<LocalizationCubit>(() => LocalizationCubit());
+  sl.registerFactory<BottomNavCubit>(() => BottomNavCubit());
 
   // Feature: Sample
   sl.registerLazySingleton<SampleRemoteDataSource>(
@@ -58,6 +75,61 @@ Future<void> init() async {
 
   sl.registerFactory<LoginCubit>(
     () => LoginCubit(sl()),
+  );
+
+  // Feature: Signup
+  sl.registerLazySingleton<SignupRemoteDataSource>(
+    () => SignupRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<SignupRepository>(
+    () => SignupRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<SignupUseCase>(
+    () => SignupUseCase(sl()),
+  );
+
+  sl.registerFactory<SignupCubit>(
+    () => SignupCubit(sl()),
+  );
+
+  // Feature: Business Signup
+  sl.registerLazySingleton<BusinessSignupRemoteDataSource>(
+    () => BusinessSignupRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<BusinessSignupRepository>(
+    () => BusinessSignupRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<BusinessSignupUseCase>(
+    () => BusinessSignupUseCase(sl()),
+  );
+
+  sl.registerFactory<BusinessSignupCubit>(
+    () => BusinessSignupCubit(sl()),
+  );
+
+  // Feature: OTP Verification
+  sl.registerLazySingleton<OtpVerificationRemoteDataSource>(
+    () => OtpVerificationRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<OtpVerificationRepository>(
+    () => OtpVerificationRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<VerifyOtpUseCase>(
+    () => VerifyOtpUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<ResendOtpUseCase>(
+    () => ResendOtpUseCase(sl()),
+  );
+
+  sl.registerFactory<OtpVerificationCubit>(
+    () => OtpVerificationCubit(sl(), sl()),
   );
 }
 
