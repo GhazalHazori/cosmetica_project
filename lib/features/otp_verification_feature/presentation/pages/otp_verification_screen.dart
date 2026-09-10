@@ -95,6 +95,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           backgroundColor: Colors.white,
+          resizeToAvoidBottomInset: false,
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -114,7 +115,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           fontWeight: FontWeight.bold,
                           letterSpacing: 4.0,
                           color: Colors.black,
-                          fontFamily: 'Tajawal',
+                          fontFamily: 'Almarai',
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -132,7 +133,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontFamily: 'Tajawal',
+                      fontFamily: 'Almarai',
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -145,7 +146,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         fontSize: 14,
                         height: 1.5,
                         color: Colors.grey,
-                        fontFamily: 'Tajawal',
+                        fontFamily: 'Almarai',
                       ),
                     ),
                   ),
@@ -168,7 +169,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       letterSpacing: 2.0,
-                      fontFamily: 'Tajawal',
+                      fontFamily: 'Almarai',
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -177,7 +178,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.grey,
-                      fontFamily: 'Tajawal',
+                      fontFamily: 'Almarai',
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -202,7 +203,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 _secondsRemaining == 0
                                     ? Colors.black
                                     : Colors.black87,
-                            fontFamily: 'Tajawal',
+                            fontFamily: 'Almarai',
                           ),
                         ),
                         Container(width: 130, height: 1, color: Colors.black),
@@ -252,7 +253,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: 'Tajawal',
+                                          fontFamily: 'Almarai',
                                         ),
                                       ),
                             );
@@ -285,11 +286,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.black,
-          fontFamily: 'Tajawal',
+          fontFamily: 'Almarai',
         ),
         decoration: InputDecoration(
           counterText: '',
           contentPadding: EdgeInsets.zero,
+          fillColor: Colors.white,
+          filled: true,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.zero,
             borderSide: const BorderSide(color: Colors.black, width: 1.5),

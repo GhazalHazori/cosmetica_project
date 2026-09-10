@@ -32,19 +32,20 @@ class _SignUpPageState extends State<SignUpPage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Colors.white,
+          appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: SizedBox.shrink(),
+              actions: [ IconButton(
+                icon: const Icon(Icons.arrow_forward, color: Colors.black, size: 28),
+                onPressed: () => Navigator.pop(context),
+              ),]),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 5.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_forward, color: Colors.black, size: 28),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
+              
                 const SizedBox(height: 10),
                 Center(
                   child: Container(
@@ -131,6 +132,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 24,
                       child: Checkbox(
                         value: _agreeToTerms,
+                      checkColor: Colors.white,
                         activeColor: Colors.black,
                         side: const BorderSide(color: Colors.black, width: 1.5),
                         onChanged: (value) {
@@ -209,6 +211,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                    fontFamily: 'Almarai',
                                 ),
                               ),
                       ),
@@ -221,7 +224,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     const Text(
                       'لديك حساب بالفعل؟ ',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                      style: TextStyle(color: Colors.grey, fontSize: 14,  fontFamily: 'Almarai',),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -234,6 +237,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
+                            fontFamily: 'Almarai',
                         ),
                       ),
                     ),
@@ -278,6 +282,8 @@ class _SignUpPageState extends State<SignUpPage> {
           style: const TextStyle(fontSize: 15, color: Colors.black),
           decoration: InputDecoration(
             hintText: hint,
+            fillColor: Colors.white,
+            filled: true,
             hintTextDirection: textDirection,
             hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
             contentPadding: const EdgeInsets.symmetric(vertical: 8),
@@ -287,7 +293,7 @@ class _SignUpPageState extends State<SignUpPage> {
             focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.black, width: 2),
             ),
-            prefixIcon: isPassword
+            suffixIcon: isPassword
                 ? IconButton(
                     icon: Icon(
                       obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,

@@ -33,6 +33,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: 'Almarai',
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colors.background,
       dividerColor: colors.divider,

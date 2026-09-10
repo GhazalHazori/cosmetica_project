@@ -5,6 +5,8 @@ import '../../../../core/cubits/bottom_nav_cubit.dart';
 import '../../../../di/injection_container.dart';
 import '../../../cart_feature/presentation/pages/cart_screen.dart';
 import '../../../favorites_feature/presentation/pages/favorites_screen.dart';
+import '../../../profile_feature/presentation/pages/profile_screen.dart';
+import '../../../search_feature/presentation/pages/search_categories_screen.dart';
 import 'home_screen.dart';
 
 class MainLayoutScreen extends StatelessWidget {
@@ -16,8 +18,8 @@ class MainLayoutScreen extends StatelessWidget {
     HomeScreen(),
     FavoritesScreen(),
     CartScreen(),
-    _PlaceholderScreen(title: 'البحث', icon: Icons.search),
-    _PlaceholderScreen(title: 'حسابي', icon: Icons.person_outline),
+    SearchCategoriesScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -80,21 +82,6 @@ class MainLayoutScreen extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
-}
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _PlaceholderScreen({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Icon(icon, size: 56, color: Colors.black54)),
     );
   }
 }

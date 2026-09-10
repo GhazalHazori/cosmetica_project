@@ -50,11 +50,15 @@ class _AccountTypeSelectionSheetState
             const SizedBox(height: 16),
             Row(
               children: [
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: Colors.grey),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.grey.shade100,
+            Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.manage_accounts_outlined,
+                    color: Colors.black,
                   ),
                 ),
                 const Expanded(
@@ -79,17 +83,14 @@ class _AccountTypeSelectionSheetState
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.manage_accounts_outlined,
-                    color: Colors.black,
+                      IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close, color: Colors.grey),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.grey.shade100,
                   ),
                 ),
+              
               ],
             ),
             const SizedBox(height: 24),
@@ -130,6 +131,7 @@ class _AccountTypeSelectionSheetState
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
+                          fontFamily: 'Almarai',
                       ),
                     ),
                     SizedBox(width: 8),
@@ -156,6 +158,7 @@ class _AccountTypeSelectionSheetState
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
+                      fontFamily: 'Almarai',
                   ),
                 ),
               ),
@@ -190,7 +193,17 @@ class _AccountTypeSelectionSheetState
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildRadioIcon(isSelected),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.black : Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.black,
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -217,17 +230,8 @@ class _AccountTypeSelectionSheetState
               ),
             ),
             const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.black : Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                icon,
-                color: isSelected ? Colors.white : Colors.black,
-              ),
-            ),
+          
+              _buildRadioIcon(isSelected),
           ],
         ),
       ),
@@ -253,9 +257,29 @@ class _AccountTypeSelectionSheetState
           children: [
             Row(
               children: [
-                _buildRadioIcon(isSelected),
+         Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.black : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.storefront_outlined,
+                    color: isSelected ? Colors.white : Colors.black,
+                  ),
+                ),
                 const SizedBox(width: 8),
-                Container(
+              
+             
+                Text(
+                  'حساب تجاري',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),   const Spacer(),
+                  Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
                     vertical: 4,
@@ -269,27 +293,9 @@ class _AccountTypeSelectionSheetState
                     style: TextStyle(fontSize: 11, color: Colors.grey),
                   ),
                 ),
-                const Spacer(),
-                Text(
-                  'حساب تجاري',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
                 const SizedBox(width: 12),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? Colors.black : Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.storefront_outlined,
-                    color: isSelected ? Colors.white : Colors.black,
-                  ),
-                ),
+                         _buildRadioIcon(isSelected),
+              
               ],
             ),
             const SizedBox(height: 12),

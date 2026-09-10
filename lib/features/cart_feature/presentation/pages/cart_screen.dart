@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../payment_methods_feature/presentation/pages/payment_methods_screen.dart';
+
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
@@ -14,6 +16,7 @@ class _CartScreenState extends State<CartScreen> {
       details: 'الحجم: 100 مل | اللون: ذهبي',
       price: 950,
       imageColor: Color(0xFFE8DCC4),
+      imagePath: 'assets/images/favorite_image.jpg',
     ),
     _CartItem(
       title: 'أحمر شفاه شانيل',
@@ -21,6 +24,7 @@ class _CartScreenState extends State<CartScreen> {
       price: 420,
       quantity: 2,
       imageColor: Color(0xFFF3C5C5),
+      imagePath: 'assets/images/category_image.jpg',
     ),
   ];
 
@@ -60,6 +64,7 @@ class _CartScreenState extends State<CartScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
@@ -86,101 +91,122 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (_cartItems.isEmpty)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 60, bottom: 40),
-                    child: Text('السلة فارغة'),
-                  ),
-                )
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _cartItems.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (_, index) => _buildCartItemCard(index),
-                ),
-              const SizedBox(height: 24),
-              const Text(
-                'معلومات الشحن',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              _buildShippingInfoCard(),
-              const SizedBox(height: 24),
-              const Text(
-                'هل لديك رمز خصم؟',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-              Row(
+        child: DefaultTextStyle(
+          style: const TextStyle(color: Colors.black, fontFamily: 'Almarai'),
+          child: IconTheme(
+            data: const IconThemeData(color: Colors.black),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: TextField(
-                        controller: _couponController,
-                        decoration: _inputDecoration(
-                          'أدخل رمز القسيمة',
-                          Icons.local_offer_outlined,
-                        ),
+                  if (_cartItems.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 60, bottom: 40),
+                        child: Text('السلة فارغة'),
                       ),
+                    )
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _cartItems.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (_, index) => _buildCartItemCard(index),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    height: 48,
-                    width: 90,
-                    child: ElevatedButton(
-                      onPressed:
-                          () => setState(
-                            () =>
-                                _couponApplied =
-                                    _couponController.text.trim().isNotEmpty,
-                          ),
-                      style: _blackButtonStyle,
-                      child: const Text(
-                        'تطبيق',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              if (_couponApplied)
-                const Padding(
-                  padding: EdgeInsets.only(top: 6),
-                  child: Text(
-                    'تم تطبيق رمز الخصم',
-                    style: TextStyle(color: Colors.green, fontSize: 12),
-                  ),
-                ),
-              const SizedBox(height: 24),
-              _buildSummaryCard(),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: _cartItems.isEmpty || !_confirmData ? null : () {},
-                  style: _blackButtonStyle,
-                  child: const Text(
-                    'إتمام عملية الشراء',
+                  const SizedBox(height: 24),
+                  const Text(
+                    'معلومات الشحن',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  _buildShippingInfoCard(),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'هل لديك رمز خصم؟',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: TextField(
+                            controller: _couponController,
+                            decoration: _inputDecoration(
+                              'أدخل رمز القسيمة',
+                              Icons.local_offer_outlined,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        height: 48,
+                        width: 90,
+                        child: ElevatedButton(
+                          onPressed:
+                              () => setState(
+                                () =>
+                                    _couponApplied =
+                                        _couponController.text
+                                            .trim()
+                                            .isNotEmpty,
+                              ),
+                          style: _blackButtonStyle,
+                          child: const Text(
+                            'تطبيق',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Almarai',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_couponApplied)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 6),
+                      child: Text(
+                        'تم تطبيق رمز الخصم',
+                        style: TextStyle(color: Colors.green, fontSize: 12),
+                      ),
+                    ),
+                  const SizedBox(height: 24),
+                  _buildSummaryCard(),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                    onPressed:
+                        _cartItems.isEmpty || !_confirmData
+                            ? null
+                            : () {
+                                Navigator.pushNamed(
+                                  context,
+                                  PaymentMethodsScreen.routeName,
+                                );
+                              },
+                      style: _blackButtonStyle,
+                      child: const Text(
+                        'إتمام عملية الشراء',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Almarai',
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ),
@@ -203,94 +229,116 @@ class _CartScreenState extends State<CartScreen> {
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 1.2),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      tooltip: 'حذف المنتج',
-                      onPressed:
-                          () => setState(() => _cartItems.removeAt(index)),
-                      icon: const Icon(Icons.close, size: 20),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                       
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ), IconButton(
+                          tooltip: 'حذف المنتج',
+                          onPressed:
+                              () => setState(() => _cartItems.removeAt(index)),
+                          icon: const Icon(Icons.close, size: 20),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
                     ),
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        item.details,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                       
+                        Container(
+                          height: 32,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Row(
+                            children: [
+                                                         _quantityButton('-', () {
+                                if (item.quantity > 1) {
+                                  setState(() => item.quantity--);
+                                }
+                              }),
+                              Text(
+                                '${item.quantity}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                                 _quantityButton(
+                                '+',
+                                () => setState(() => item.quantity++),
+                              ),
+                            ],
+                          ),
+                        ),
+                         Text(
+                          '${item.price * item.quantity} ر.س',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    item.details,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${item.price * item.quantity} ر.س',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Container(
-                      height: 32,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Row(
-                        children: [
-                          _quantityButton(
-                            '+',
-                            () => setState(() => item.quantity++),
-                          ),
-                          Text(
-                            '${item.quantity}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          _quantityButton('-', () {
-                            if (item.quantity > 1) {
-                              setState(() => item.quantity--);
-                            }
-                          }),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            width: 100,
-            height: 100,
-            color: item.imageColor,
-            child: const Icon(
-              Icons.shopping_bag_outlined,
-              size: 48,
-              color: Colors.white70,
+            const SizedBox(width: 12),
+            _buildProductImage(item),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductImage(_CartItem item) {
+    return SizedBox(
+      width: 100,
+      height: 100,
+      child: Image.asset(
+        item.imagePath,
+        fit: BoxFit.cover,
+        errorBuilder:
+            (_, __, ___) => ColoredBox(
+              color: item.imageColor,
+              child: const Icon(
+                Icons.shopping_bag_outlined,
+                size: 48,
+                color: Colors.white70,
+              ),
             ),
-          ),
-        ],
       ),
     );
   }
@@ -299,10 +347,10 @@ class _CartScreenState extends State<CartScreen> {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 18),
         child: Text(
           label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -318,31 +366,15 @@ class _CartScreenState extends State<CartScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.local_shipping, size: 28, color: Color(0xFF1E4D8C)),
-              SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'FLIX POST',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E4D8C),
-                    ),
-                  ),
-                  Text(
-                    'فلکس بوست',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E4D8C),
-                    ),
-                  ),
-                ],
+              Image.asset(
+                'assets/images/flix_post.png',
+                width: 86,
+                height: 32,
+                fit: BoxFit.contain,
               ),
+              SizedBox(width: 8),
             ],
           ),
           const SizedBox(height: 12),
@@ -433,6 +465,7 @@ class _CartScreenState extends State<CartScreen> {
             child: TextField(
               controller: controller,
               textDirection: textDirection,
+              
               style: const TextStyle(fontSize: 13),
               decoration: _inputDecoration(hint, null, textDirection),
             ),
@@ -450,6 +483,8 @@ class _CartScreenState extends State<CartScreen> {
     return InputDecoration(
       hintText: hint,
       hintTextDirection: textDirection,
+      fillColor: Colors.white,
+      filled: true,
       prefixIcon:
           icon == null ? null : Icon(icon, color: Colors.grey, size: 20),
       hintStyle: const TextStyle(color: Colors.black26, fontSize: 12),
@@ -528,6 +563,7 @@ class _CartItem {
   final int price;
   int quantity;
   final Color imageColor;
+  final String imagePath;
 
   _CartItem({
     required this.title,
@@ -535,5 +571,6 @@ class _CartItem {
     required this.price,
     this.quantity = 1,
     required this.imageColor,
+    required this.imagePath,
   });
 }

@@ -5,7 +5,10 @@ import 'package:cosmetica_project/features/login_feature/presentation/pages/logi
 import 'package:cosmetica_project/features/home_feature/presentation/pages/main_layout_screen.dart';
 import 'package:cosmetica_project/features/otp_verification_feature/presentation/cubit/otp_verification_cubit.dart';
 import 'package:cosmetica_project/features/otp_verification_feature/presentation/pages/otp_verification_screen.dart';
+import 'package:cosmetica_project/features/payment_methods_feature/presentation/pages/payment_methods_screen.dart';
 import 'package:cosmetica_project/features/sample_feature/presentation/pages/sample_page.dart';
+import 'package:cosmetica_project/features/search_feature/presentation/pages/search_categories_screen.dart';
+import 'package:cosmetica_project/features/profile_feature/presentation/pages/profile_screen.dart';
 import 'package:cosmetica_project/features/signup_feature/presentation/cubit/signup_cubit.dart';
 import 'package:cosmetica_project/features/signup_feature/presentation/pages/sign_up_page.dart';
 import 'package:cosmetica_project/features/splash_feature/presentation/pages/splash_page.dart';
@@ -95,6 +98,21 @@ class AppRouter {
       case MainLayoutScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => const MainLayoutScreen(),
+          settings: settings,
+        );
+      case PaymentMethodsScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => const PaymentMethodsScreen(),
+          settings: settings,
+        );
+      case SearchCategoriesScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => const SearchCategoriesScreen(),
+          settings: settings,
+        );
+      case ProfileScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => const ProfileScreen(),
           settings: settings,
         );
       case SamplePage.routeName:

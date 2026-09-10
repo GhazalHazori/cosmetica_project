@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -41,17 +42,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          tooltip: 'السلة',
-          icon: const Icon(
-            Icons.shopping_bag_outlined,
-            color: Colors.black,
-            size: 24,
-          ),
-          onPressed: () {},
-        ),
+        leading:
+        IconButton(
+            tooltip: 'البحث',
+            icon: const Icon(Icons.search, size: 26,color: Colors.black,),
+            onPressed: () {},
+          ), 
         title: const Text(
           'C O S M E T I C A',
           style: TextStyle(
@@ -64,46 +63,52 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            tooltip: 'البحث',
-            icon: const Icon(Icons.search, color: Colors.black, size: 26),
-            onPressed: () {},
-          ),
+          tooltip: 'السلة',
+          icon: const Icon(Icons.shopping_bag_outlined, size: 24,color: Colors.black,),
+          onPressed: () {},
+        ),
         ],
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'المفضلة',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 2),
-              const Text(
-                'منتجاتك المختارة بعناية',
-                style: TextStyle(fontSize: 14, color: Color(0xFF758A99)),
-              ),
-              const SizedBox(height: 20),
-              if (_favoriteProducts.isEmpty)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 80),
-                    child: Text('لا توجد منتجات في المفضلة'),
+        child: DefaultTextStyle(
+          style: const TextStyle(color: Colors.black),
+          child: IconTheme(
+            data: const IconThemeData(color: Colors.black),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'المفضلة',
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold,  fontFamily: 'Almarai',),
                   ),
-                )
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _favoriteProducts.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemBuilder: (_, index) => _buildFavoriteCard(index),
-                ),
-              const SizedBox(height: 20),
-            ],
+                  const SizedBox(height: 2),
+                  const Text(
+                    'منتجاتك المختارة بعناية',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF758A99),  fontFamily: 'Almarai',),
+                  ),
+                  const SizedBox(height: 20),
+                  if (_favoriteProducts.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 80),
+                        child: Text('لا توجد منتجات في المفضلة'),
+                      ),
+                    )
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _favoriteProducts.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 16),
+                      itemBuilder: (_, index) => _buildFavoriteCard(index),
+                    ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -119,197 +124,210 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 1.2),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          children: [
+            Expanded(
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        product.brand,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF8C9BA5),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            product.brand,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF8C9BA5),
+                                fontFamily: 'Almarai',
+                            ),
+                          ),
+                          const Icon(Icons.favorite, size: 20),
+                        ],
                       ),
-                      const Icon(Icons.favorite, size: 20, color: Colors.black),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    product.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
+                      const SizedBox(height: 4),
                       Text(
-                        product.price,
+                        product.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.right,
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
+                            fontFamily: 'Almarai',
+                          height: 1.2,
                         ),
                       ),
-                      if (product.oldPrice != null) ...[
-                        const SizedBox(width: 8),
-                        Text(
-                          product.oldPrice!,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap:
-                            () => setState(
-                              () => _favoriteProducts.removeAt(index),
-                            ),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child: const Icon(Icons.delete_outline, size: 18),
-                        ),
-                      ),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
                           Text(
-                            '(${product.rating})',
+                            product.price,
                             style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF6B7C85),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                                fontFamily: 'Almarai',
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          const Row(
+                          if (product.oldPrice != null) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              product.oldPrice!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                                decoration: TextDecoration.lineThrough,
+                                  fontFamily: 'Almarai',
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                         
+                          Row(
                             children: [
-                              Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Color(0xFFFFC107),
+                            
+                           
+                              const Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Color(0xFFFFC107),
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Color(0xFFFFC107),
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Color(0xFFFFC107),
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Color(0xFFFFC107),
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Color(0xFFFFC107),
+                                  ),
+                                ],
                               ),
-                              Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Color(0xFFFFC107),
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Color(0xFFFFC107),
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Color(0xFFFFC107),
-                              ),
-                              Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Color(0xFFFFC107),
+                                 const SizedBox(width: 4),
+                                Text(
+                                '(${product.rating})',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF6B7C85),
+                                    fontFamily: 'Almarai',
+                                ),
                               ),
                             ],
+                          ),
+                           InkWell(
+                            onTap:
+                                () => setState(
+                                  () => _favoriteProducts.removeAt(index),
+                                ),
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                              ),
+                              child: const Icon(Icons.delete_outline, size: 18),
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-          Container(
-            width: 135,
-            height: double.infinity,
-            color: product.imageColor,
-            child:
-                product.timerText == null
-                    ? const Icon(
-                      Icons.shopping_bag_outlined,
-                      size: 56,
-                      color: Colors.white70,
-                    )
-                    : Stack(
-                      children: [
-                        const Center(
-                          child: Icon(
-                            Icons.shopping_bag_outlined,
-                            size: 56,
-                            color: Colors.white70,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 6,
-                            ),
-                            color: Colors.black.withValues(alpha: 0.85),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      product.timerText!,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 2),
-                                    const Text(
-                                      'عرض خلال',
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 9,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  product.badgeText!,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-          ),
-        ],
+            _buildProductImage(product),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildProductImage(_FavoriteProduct product) {
+    return Container(
+      width: 135,
+      height: double.infinity,
+      // color: product.imageColor,
+      child:
+          product.timerText == null
+              ?    Image.asset("assets/images/favorite_image.jpg",fit: BoxFit.cover,)
+              : Stack(
+                children: [
+                Image.asset("assets/images/favorite_image.jpg"),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 6,
+                      ),
+                      color: Colors.black.withValues(alpha: 0.85),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                product.timerText!,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                    fontFamily: 'Almarai',
+
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+                              const Text(
+                                'عرض خلال',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 9,
+                                    fontFamily: 'Almarai',
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            product.badgeText!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                                fontFamily: 'Almarai',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
     );
   }
 }

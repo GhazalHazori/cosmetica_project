@@ -46,6 +46,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Divider(color: Color(0xffF1F5F9),thickness: 2,),
               _buildHeroBanner(),
               const SizedBox(height: 24),
               _buildSectionHeader('اكتشفي المجموعات', showMore: true),
@@ -116,23 +117,16 @@ class HomeScreen extends StatelessWidget {
     return Container(
       height: 380,
       width: double.infinity,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: _green,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Stack(
         children: [
-          PositionedDirectional(
-            top: 24,
-            start: 24,
-            child: Opacity(
-              opacity: 0.2,
-              child: Image.asset(
-                'assets/images/cosmatica_logo.png',
-                width: 150,
-                height: 150,
-              ),
-            ),
+          Image.asset(
+            'assets/images/ads_home_image.png',
+                    
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -176,7 +170,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       child: const Text(
                         'تسوقي الآن',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Almarai'),
                       ),
                     ),
                   ),
@@ -199,7 +193,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Color(0xff0F172A)),
             ),
           ],
         ),
@@ -208,8 +202,9 @@ class HomeScreen extends StatelessWidget {
             'عرض الكل',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey,
+              color: Color(0xff64748B),
               decoration: TextDecoration.underline,
+              decorationColor: Color(0xff64748B)
             ),
           ),
       ],
@@ -224,7 +219,7 @@ class HomeScreen extends StatelessWidget {
     ];
 
     return SizedBox(
-      height: 190,
+      height: 250,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -232,19 +227,23 @@ class HomeScreen extends StatelessWidget {
         itemBuilder: (_, index) {
           final category = categories[index];
           return SizedBox(
-            width: 140,
+            width: 160,
             child: Column(
               children: [
                 Container(
-                  height: 150,
+                  height: 213,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF2F2F2),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.black12),
+                    border: Border.all(color: Color(0xff0F172A),width: 1.5),
                   ),
-                  child: Center(
-                    child: Icon(category.$2, size: 48, color: _green),
-                  ),
+                  child:ClipRRect(
+  borderRadius: BorderRadius.circular(12),
+  child: Image.asset(
+    "assets/images/category_image.jpg",
+    fit: BoxFit.cover,
+  ),
+)
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -252,6 +251,7 @@ class HomeScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xff0F172A)
                   ),
                 ),
               ],
@@ -285,18 +285,19 @@ class HomeScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: product.color,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Color(0xff0F172A),width: 1.5),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.shopping_bag_outlined,
-                    size: 64,
-                    color: Colors.white.withValues(alpha: 0.7),
-                  ),
-                ),
+                child: ClipRRect(
+  borderRadius: BorderRadius.circular(12),
+  child: Image.asset(
+    "assets/images/update_image.jpg",
+    fit: BoxFit.cover,
+  ),
+)
               ),
               PositionedDirectional(
-                top: 8,
-                start: 8,
+                top: 4,
+                start: 4,
                 child: IconButton.filledTonal(
                   tooltip: 'إضافة للمفضلة',
                   onPressed: () {},
@@ -309,11 +310,14 @@ class HomeScreen extends StatelessWidget {
                   top: 8,
                   end: 8,
                   child: Container(
+                  decoration: BoxDecoration(
+                                        color: Colors.black,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
+                      horizontal: 8,
                       vertical: 2,
                     ),
-                    color: Colors.black,
                     child: Text(
                       product.discount!,
                       style: const TextStyle(color: Colors.white, fontSize: 10),
@@ -325,18 +329,18 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             product.brand,
-            style: const TextStyle(color: Colors.grey, fontSize: 11),
+            style: const TextStyle(color: Color(0xff64748B), fontSize: 11,fontFamily: 'Almarai',fontWeight: FontWeight.bold),
           ),
           Text(
             product.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Color(0xff0F172A),fontFamily: 'Almarai'),
           ),
           const SizedBox(height: 2),
           Text(
             product.price,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600,color: Color(0xff0F172A),fontFamily: 'Almarai'),
           ),
         ],
       ),

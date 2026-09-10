@@ -50,20 +50,21 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: SizedBox.shrink(),
+              actions: [ IconButton(
+                icon: const Icon(Icons.arrow_forward, color: Colors.black, size: 28),
+                onPressed: () => Navigator.pop(context),
+              ),]),
             backgroundColor: Colors.white,
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 5.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_forward, color: Colors.black, size: 28),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ),
+                   
                     const SizedBox(height: 10),
                     Center(
                       child: Container(
@@ -91,6 +92,7 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
+                        fontFamily: 'Almarai',
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -181,7 +183,7 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                                     'إنشاء حساب',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.bold, fontFamily: 'Almarai',
                                     ),
                                   ),
                           ),
@@ -194,7 +196,7 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                       children: [
                         const Text(
                           'لديك حساب بالفعل؟ ',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          style: TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'Almarai',),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -304,6 +306,8 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
           style: const TextStyle(fontSize: 15, color: Colors.black),
           decoration: InputDecoration(
             hintText: hint,
+            fillColor: Colors.white,
+            filled: true,
             hintTextDirection: textDirection,
             hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
             contentPadding: const EdgeInsets.symmetric(vertical: 8),
@@ -313,7 +317,7 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
             focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.black, width: 2),
             ),
-            prefixIcon: isPassword
+            suffixIcon: isPassword
                 ? IconButton(
                     icon: Icon(
                       obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,

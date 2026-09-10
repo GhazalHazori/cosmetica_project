@@ -18,11 +18,26 @@ import '../features/otp_verification_feature/data/repositories/otp_verification_
 import '../features/otp_verification_feature/domain/repositories/otp_verification_repository.dart';
 import '../features/otp_verification_feature/domain/usecases/otp_verification_use_case.dart';
 import '../features/otp_verification_feature/presentation/cubit/otp_verification_cubit.dart';
+import '../features/payment_methods_feature/data/datasources/payment_method_remote_data_source.dart';
+import '../features/payment_methods_feature/data/repositories/payment_method_repository_impl.dart';
+import '../features/payment_methods_feature/domain/repositories/payment_method_repository.dart';
+import '../features/payment_methods_feature/domain/usecases/get_payment_methods_use_case.dart';
+import '../features/payment_methods_feature/presentation/cubit/payment_methods_cubit.dart';
 import '../features/sample_feature/data/datasources/sample_remote_data_source.dart';
 import '../features/sample_feature/data/repositories/sample_repository_impl.dart';
 import '../features/sample_feature/domain/repositories/sample_repository.dart';
 import '../features/sample_feature/domain/usecases/get_samples_use_case.dart';
 import '../features/sample_feature/presentation/cubit/sample_cubit.dart';
+import '../features/search_feature/data/datasources/category_remote_data_source.dart';
+import '../features/search_feature/data/repositories/category_repository_impl.dart';
+import '../features/search_feature/domain/repositories/category_repository.dart';
+import '../features/search_feature/domain/usecases/category_usecases.dart';
+import '../features/search_feature/presentation/cubit/search_cubit.dart';
+import '../features/profile_feature/data/datasources/profile_remote_data_source.dart';
+import '../features/profile_feature/data/repositories/profile_repository_impl.dart';
+import '../features/profile_feature/domain/repositories/profile_repository.dart';
+import '../features/profile_feature/domain/usecases/get_profile_use_case.dart';
+import '../features/profile_feature/presentation/cubit/profile_cubit.dart';
 import '../features/signup_feature/data/datasources/signup_remote_data_source.dart';
 import '../features/signup_feature/data/repositories/signup_repository_impl.dart';
 import '../features/signup_feature/domain/repositories/signup_repository.dart';
@@ -130,6 +145,61 @@ Future<void> init() async {
 
   sl.registerFactory<OtpVerificationCubit>(
     () => OtpVerificationCubit(sl(), sl()),
+  );
+
+  // Feature: Payment Methods
+  sl.registerLazySingleton<PaymentMethodRemoteDataSource>(
+    () => PaymentMethodRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<PaymentMethodRepository>(
+    () => PaymentMethodRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<GetPaymentMethodsUseCase>(
+    () => GetPaymentMethodsUseCase(sl()),
+  );
+
+  sl.registerFactory<PaymentMethodsCubit>(
+    () => PaymentMethodsCubit(sl()),
+  );
+
+  // Feature: Search
+  sl.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<GetCategoriesUseCase>(
+    () => GetCategoriesUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<SearchCategoriesUseCase>(
+    () => SearchCategoriesUseCase(sl()),
+  );
+
+  sl.registerFactory<SearchCubit>(
+    () => SearchCubit(sl(), sl()),
+  );
+
+  // Feature: Profile
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<GetProfileUseCase>(
+    () => GetProfileUseCase(sl()),
+  );
+
+  sl.registerFactory<ProfileCubit>(
+    () => ProfileCubit(sl()),
   );
 }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../di/injection_container.dart';
 import '../cubit/login_cubit.dart';
@@ -190,6 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
+                                      fontFamily: 'Almarai',
                                   ),
                                 ),
                         );
@@ -220,6 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: AppColors.primaryText,
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
+                              fontFamily: 'Almarai',
                             ),
                           ),
                         ),
