@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../features/signup_feature/presentation/pages/sign_up_page.dart';
 import '../../../../features/business_signup_feature/presentation/pages/company_sign_up_page.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 void showAccountTypeBottomSheet(BuildContext context) {
   showModalBottomSheet(
@@ -119,12 +120,15 @@ class _AccountTypeSelectionSheetState
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    
+                    Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                       SizedBox(width: 8),
                     Text(
                       'المتابعة',
                       style: TextStyle(
@@ -134,8 +138,7 @@ class _AccountTypeSelectionSheetState
                           fontFamily: 'Almarai',
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                 
                   ],
                 ),
               ),
@@ -149,7 +152,7 @@ class _AccountTypeSelectionSheetState
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.grey.shade300),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                 ),
                 child: const Text(
@@ -184,7 +187,7 @@ class _AccountTypeSelectionSheetState
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isSelected ? Colors.black : Colors.grey.shade200,
             width: isSelected ? 2 : 1,
@@ -247,7 +250,7 @@ class _AccountTypeSelectionSheetState
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isSelected ? Colors.black : Colors.grey.shade200,
             width: isSelected ? 2 : 1,
@@ -303,7 +306,7 @@ class _AccountTypeSelectionSheetState
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 border: Border.all(color: Colors.grey.shade200),
               ),
               child: Column(

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:video_player/video_player.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../di/injection_container.dart';
+import '../../../home_feature/presentation/pages/main_layout_screen.dart';
+import '../../../login_feature/presentation/pages/login_page.dart';
+import '../../../otp_verification_feature/presentation/pages/otp_verification_screen.dart';
 import '../cubit/splash_cubit.dart';
 
 class SplashPage extends StatelessWidget {
@@ -13,7 +17,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SplashCubit>(),
+      create: (_) => sl<SplashCubit>()..start(),
       child: const SplashView(),
     );
   }
@@ -26,58 +30,37 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> {
-  VideoPlayerController? _controller;
+class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
+  late final AnimationController _controller;
   bool _hasNavigated = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeVideo();
-    });
-  }
+    debugPrint("🎬 [Splash] initState called");
 
-  Future<void> _initializeVideo() async {
-    _controller = VideoPlayerController.asset('assets/video/cosmetica_flutter_android.mp4');
+    _controller = AnimationController(vsync: this);
 
-    try {
-      await _controller!.initialize();
-      _controller!.setLooping(false);
-
-      _controller!.addListener(_videoListener);
-
-      if (mounted) {
-        setState(() {});
-        await _controller!.play();
-        context.read<SplashCubit>().onVideoInitialized();
-      }
-    } catch (e) {
-      _navigateToNextScreen();
-    }
-  }
-
-  void _videoListener() {
-    if (_controller != null && _controller!.value.isInitialized && !_hasNavigated) {
-      final position = _controller!.value.position;
-      final duration = _controller!.value.duration;
-
-      // التأكد من الوصول للنهاية أو تجاوزها
-      if (position >= duration && duration > Duration.zero) {
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        debugPrint("🏁 [Splash] Lottie reached end.");
         _navigateToNextScreen();
       }
-    }
+    });
+
+    Future.delayed(const Duration(seconds: 8), () {
+      if (mounted && !_hasNavigated) {
+        debugPrint("⏰ [Splash] Safety timer reached, triggering navigation.");
+        _navigateToNextScreen();
+      }
+    });
   }
 
   void _navigateToNextScreen() {
     if (_hasNavigated) return;
     _hasNavigated = true;
 
-    // إزالة الـ Listener وإيقاف المشغل فوراً لمنع أي استدعاءات إضافية أثناء التوجيه
-    if (_controller != null) {
-      _controller!.removeListener(_videoListener);
-      _controller!.pause();
-    }
+    debugPrint("🚀 [Splash] Navigating to next screen");
 
     if (mounted) {
       context.read<SplashCubit>().onVideoCompleted();
@@ -86,11 +69,8 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   void dispose() {
-    if (_controller != null) {
-      _controller!.removeListener(_videoListener);
-      _controller!.dispose();
-      _controller = null;
-    }
+    debugPrint("🧹 [Splash] Disposing controller...");
+    _controller.dispose();
     super.dispose();
   }
 
@@ -99,24 +79,62 @@ class _SplashViewState extends State<SplashView> {
     return BlocListener<SplashCubit, SplashState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
+        debugPrint("🔔 [Splash] State changed to: ${state.status}");
         if (state.status == SplashStatus.completed) {
-          Navigator.pushReplacementNamed(context, '/login');
+          final pending = state.pendingVerification;
+          final (String route, Object? arguments) = switch (state.destination) {
+            SplashDestination.home => (MainLayoutScreen.routeName, null),
+            SplashDestination.login => (LoginPage.routeName, null),
+            SplashDestination.otpVerification => (
+                OtpVerificationScreen.routeName,
+                OtpVerificationArgs(
+                  phoneNumber: pending!.phoneNumber,
+                  isBusiness: pending.isBusiness,
+                  codeSentAt: pending.codeSentAt,
+                ),
+              ),
+          };
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            route,
+            (route) => false,
+            arguments: arguments,
+          );
         }
       },
-      child: Scaffold(
-        // backgroundColor: Colors.white,
-        body: _controller != null && _controller!.value.isInitialized
-            ? SizedBox.expand(
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: _controller!.value.size.width,
-                    height: _controller!.value.size.height,
-                    child: VideoPlayer(_controller!),
-                  ),
-                ),
-              )
-            : const SizedBox.expand(),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child: Lottie.asset(
+              'assets/lottie/cosmetica_lottiee.json',
+              controller: _controller,
+              fit: BoxFit.contain,
+              onLoaded: (composition) {
+                debugPrint("✅ [Splash] Lottie Loaded Successfully");
+                _controller.duration = composition.duration;
+                _controller.forward();
+
+                if (mounted) {
+                  context.read<SplashCubit>().onVideoInitialized();
+                }
+              },
+              errorBuilder: (context, error, stackTrace) {
+                debugPrint("❌ [Splash] Lottie Loading Failed: $error");
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _navigateToNextScreen();
+                });
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
       ),
     );
   }

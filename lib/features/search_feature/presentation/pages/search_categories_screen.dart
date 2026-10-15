@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../di/injection_container.dart';
 import '../cubit/search_cubit.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class SearchCategoriesScreen extends StatefulWidget {
   const SearchCategoriesScreen({super.key});
@@ -30,19 +31,29 @@ class _SearchCategoriesScreenState extends State<SearchCategoriesScreen> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(
-            title: const Text(
-              'البحث',
-              style: TextStyle(
-                color: Color(0xFF0F172A),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            centerTitle: true,
-            backgroundColor: Colors.white,
-            elevation: 0,
-          ),
+  
+//           appBar: AppBar(
+//             title: const Text(
+//               'البحث',
+//               style: TextStyle(
+//                 color: Color(0xFF0F172A),
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//                 bottom: PreferredSize(preferredSize: Size(1, 1), child:     const Divider(height: 1, color: Color(0xFFF1F5F9)),
+// ),
+//           elevation: 0,
+//           actions:[ IconButton(
+//           icon: const Icon(Icons.arrow_forward, color: Colors.black),
+//           onPressed: () => Navigator.maybePop(context),
+//         ),],
+        
+//           leading: SizedBox.shrink(),
+//             centerTitle: true,
+//             backgroundColor: Colors.white,
+       
+//           ),
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,33 +63,29 @@ class _SearchCategoriesScreenState extends State<SearchCategoriesScreen> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.maybePop(context);
-                        },
-                        icon: const Icon(Icons.arrow_back,
-                            color: Color(0xFF0F172A)),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      ),
+                   
                       const SizedBox(width: 12),
                       Expanded(
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
                             color: const Color(0xFFF8FAFC),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                           ),
                           child: TextField(
                             controller: _searchController,
                             decoration: const InputDecoration(
                               hintText: 'ابحث عن منتج، علامة تجارية...',
+                              fillColor: Color(0xffF8FAFC),
+                              filled: true,
                               hintStyle: TextStyle(
                                 color: Color(0xFF94A3B8),
                                 fontSize: 13,
-                                fontFamily: 'Tajawal',
+                                fontFamily: 'Almarai',
                               ),
                               border: InputBorder.none,
+                              disabledBorder:  InputBorder.none,
+                              enabledBorder:  InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 12,
@@ -89,6 +96,15 @@ class _SearchCategoriesScreenState extends State<SearchCategoriesScreen> {
                             },
                           ),
                         ),
+                      ),
+                         IconButton(
+                        onPressed: () {
+                          Navigator.maybePop(context);
+                        },
+                        icon: const Icon(Icons.arrow_forward,
+                            color: Color(0xFF0F172A)),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
                       ),
                     ],
                   ),
@@ -136,7 +152,7 @@ class _SearchCategoriesScreenState extends State<SearchCategoriesScreen> {
                             context: context,
                             title: category.title,
                             children: category.children ?? [],
-                            isInitiallyExpanded: index == 1,
+                            isInitiallyExpanded: index == 0,
                           );
                         },
                       );

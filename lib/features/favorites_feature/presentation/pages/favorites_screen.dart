@@ -1,5 +1,6 @@
-
 import 'package:flutter/material.dart';
+
+import '../../../../core/theme/app_spacing.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -9,6 +10,10 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
+  static const _cardBorder = Color(0xFFF1F5F9);
+  static const _cardShadow = Color(0x14000000);
+  static const _deleteBorder = Color(0xFFE2E8F0);
+
   final List<_FavoriteProduct> _favoriteProducts = [
     const _FavoriteProduct(
       brand: 'إستي لودر',
@@ -120,9 +125,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
     return Container(
       height: 170,
+      // Clips the product image to the rounded corners.
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.black, width: 1.2),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: _cardBorder),
+        boxShadow: const [
+          BoxShadow(
+            color: _cardShadow,
+            blurRadius: 16,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
       child: Directionality(
         textDirection: TextDirection.ltr,
@@ -242,11 +257,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 () => setState(
                                   () => _favoriteProducts.removeAt(index),
                                 ),
+                            borderRadius:
+                                BorderRadius.circular(AppSpacing.radiusMd),
                             child: Container(
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.circular(AppSpacing.radiusMd),
+                                border: Border.all(color: _deleteBorder),
                               ),
                               child: const Icon(Icons.delete_outline, size: 18),
                             ),
@@ -274,8 +294,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           product.timerText == null
               ?    Image.asset("assets/images/favorite_image.jpg",fit: BoxFit.cover,)
               : Stack(
+                fit: StackFit.expand,
                 children: [
-                Image.asset("assets/images/favorite_image.jpg"),
+                Image.asset("assets/images/favorite_image.jpg",fit: BoxFit.cover,),
                   Positioned(
                     bottom: 0,
                     left: 0,

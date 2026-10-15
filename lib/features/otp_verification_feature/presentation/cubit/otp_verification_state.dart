@@ -1,6 +1,7 @@
 part of 'otp_verification_cubit.dart';
 
-enum OtpVerificationStatus { initial, loading, success, failure }
+/// [success] means the code was verified; [resent] means a new code was sent.
+enum OtpVerificationStatus { initial, loading, success, resent, failure }
 
 class OtpVerificationState extends Equatable {
   final OtpVerificationStatus status;

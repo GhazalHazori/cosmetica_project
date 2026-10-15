@@ -1,10 +1,16 @@
+import 'package:cosmetica_project/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+
+import '../../../product_details_feature/domain/entities/product_detail_entity.dart';
+import '../../../product_details_feature/presentation/pages/product_detail_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   static const _green = Color(0xFF2D5A43);
   static const _text = Color(0xFF171717);
+  static const _cardBorder = Color(0xFFF1F5F9);
+  static const _cardShadow = Color(0x14000000);
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +18,17 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          tooltip: 'البحث',
-          icon: const Icon(Icons.search, color: _text),
-          onPressed: () {},
+        leading:  Padding(
+          padding:  EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Image.asset(
+            'assets/images/cosmatica_logo.png',
+            width: 28,
+            height: 28,
+            errorBuilder: (_, __, ___) => Container(color: _green),
+          ),
         ),
         title: const Text(
-          'C O S M E T I C A',
+          'COSMETICA',
           style: TextStyle(
             color: _text,
             fontSize: 18,
@@ -28,15 +38,12 @@ class HomeScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 16),
-            child: Image.asset(
-              'assets/images/cosmatica_logo.png',
-              width: 28,
-              height: 28,
-              errorBuilder: (_, __, ___) => Container(color: _green),
-            ),
-          ),
+          IconButton(
+          tooltip: 'البحث',
+          icon: const Icon(Icons.search, color: _text),
+          onPressed: () {},
+        ),
+         
         ],
       ),
       body: Directionality(
@@ -46,7 +53,8 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Divider(color: Color(0xffF1F5F9),thickness: 2,),
+                   const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                     const SizedBox(height: 10),
               _buildHeroBanner(),
               const SizedBox(height: 24),
               _buildSectionHeader('اكتشفي المجموعات', showMore: true),
@@ -55,7 +63,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 24),
               _buildSectionHeader('وصلنا حديثاً'),
               const SizedBox(height: 12),
-              _buildProducts([
+              _buildProducts(context, [
                 _Product(
                   'سيروم الليل المجدد',
                   'إيسنس باريس',
@@ -72,7 +80,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 24),
               _buildSectionHeader('الأكثر مبيعاً', showMore: true),
               const SizedBox(height: 12),
-              _buildProducts([
+              _buildProducts(context, [
                 _Product(
                   'مجموعة أحمر الشفاه',
                   'الأفضل تقييماً',
@@ -89,7 +97,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 24),
               _buildSectionHeader('عروض خاصة'),
               const SizedBox(height: 12),
-              _buildProducts([
+              _buildProducts(context, [
                 _Product(
                   'مجموعة النضارة الفائقة',
                   'روتين العناية',
@@ -120,7 +128,7 @@ class HomeScreen extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Stack(
         children: [
@@ -164,7 +172,7 @@ class HomeScreen extends StatelessWidget {
                         backgroundColor: Colors.white,
                         foregroundColor: _text,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                         ),
                         elevation: 0,
                       ),
@@ -234,11 +242,11 @@ class HomeScreen extends StatelessWidget {
                   height: 213,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF2F2F2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Color(0xff0F172A),width: 1.5),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    // border: Border.all(color: Color(0xff0F172A),width: 1.5),
                   ),
                   child:ClipRRect(
-  borderRadius: BorderRadius.circular(12),
+  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
   child: Image.asset(
     "assets/images/category_image.jpg",
     fit: BoxFit.cover,
@@ -262,17 +270,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProducts(List<_Product> products) {
+  Widget _buildProducts(BuildContext context, List<_Product> products) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
           products
-              .map((product) => Expanded(child: _buildProduct(product)))
+              .map((product) => Expanded(child: _buildProduct(context, product)))
               .toList(),
     );
   }
 
-  Widget _buildProduct(_Product product) {
+  Widget _buildProduct(BuildContext context, _Product product) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Column(
@@ -280,29 +288,72 @@ class HomeScreen extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(
-                height: 160,
-                decoration: BoxDecoration(
-                  color: product.color,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Color(0xff0F172A),width: 1.5),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  ProductDetailScreen.routeName,
+                  arguments: ProductDetailEntity(
+                    title: product.title,
+                    brand: product.brand,
+                    price: product.price,
+                    color: ColorValue(product.color.toARGB32()),
+                    discount: product.discount,
+                  ),
                 ),
-                child: ClipRRect(
-  borderRadius: BorderRadius.circular(12),
-  child: Image.asset(
-    "assets/images/update_image.jpg",
-    fit: BoxFit.cover,
-  ),
-)
+                child: Container(
+                  height: 160,
+                  decoration: BoxDecoration(
+                    color: product.color,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    // Soft lift instead of a hard black outline.
+                    border: Border.all(color: _cardBorder),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: _cardShadow,
+                        blurRadius: 16,
+                        offset: Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    child: Image.asset(
+                      "assets/images/update_image.jpg",
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
+                ),
               ),
               PositionedDirectional(
-                top: 4,
-                start: 4,
-                child: IconButton.filledTonal(
-                  tooltip: 'إضافة للمفضلة',
-                  onPressed: () {},
-                  icon: const Icon(Icons.favorite_border, size: 18),
-                  style: IconButton.styleFrom(backgroundColor: Colors.white),
+                top: AppSpacing.sm,
+                start: AppSpacing.sm,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: _cardShadow,
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton.filledTonal(
+                    tooltip: 'إضافة للمفضلة',
+                    onPressed: () {},
+                    icon: const Icon(Icons.favorite_border, size: 18),
+                    // The theme has no onSecondaryContainer, so tonal buttons
+                    // fall back to onSecondary (white) — set it explicitly.
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: _text,
+                      minimumSize: const Size(36, 36),
+                      fixedSize: const Size(36, 36),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
                 ),
               ),
               if (product.discount != null)

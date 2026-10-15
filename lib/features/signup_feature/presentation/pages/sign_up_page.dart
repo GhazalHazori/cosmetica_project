@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../di/injection_container.dart';
-import '../../../../features/otp_verification_feature/presentation/pages/otp_verification_screen.dart';
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/utils/phone_utils.dart';
+import '../../../../core/widgets/country_code_picker.dart';
+import '../../../privacy_policy_feature/presentation/widgets/policy_dialog.dart';
 import '../../domain/entities/signup_entity.dart';
 import '../cubit/signup_cubit.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -19,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
+  CountryCode _countryCode = kDefaultCountryCode;
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -48,22 +52,9 @@ class _SignUpPageState extends State<SignUpPage> {
               
                 const SizedBox(height: 10),
                 Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    color: const Color(0xFFF5F5F5),
-                    child: const Center(
-                      child: Text(
-                        'COSMETICA',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2.0,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: Image.asset(
+                    "assets/images/cosmatica_logo.png",width: 100,height: 100,
+                  )
                 ),
                 const SizedBox(height: 24),
                 const Text(
@@ -92,10 +83,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 20),
                 _buildInputField(
                   label: 'رقم الهاتف المحمول',
-                  hint: '+966 50 000 0000',
+                  hint: '5X XXX XXXX',
                   controller: _phoneController,
                   textDirection: TextDirection.ltr,
                   keyboardType: TextInputType.phone,
+                  prefix: CountryCodeSelector(
+                    country: _countryCode,
+                    onTap: _selectCountryCode,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 _buildInputField(
@@ -145,34 +140,42 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Wrap(
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             'أوافق على ',
                             style: TextStyle(fontSize: 13, color: Colors.black),
                           ),
-                          Text(
-                            'سياسة الخصوصية',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
+                          GestureDetector(
+                            onTap: () =>
+                                showPolicyDialog(context, isTermsOfUse: false),
+                            child: const Text(
+                              'سياسة الخصوصية',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                          Text(
+                          const Text(
                             ' و ',
                             style: TextStyle(fontSize: 13, color: Colors.black),
                           ),
-                          Text(
-                            'شروط الاستخدام',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
+                          GestureDetector(
+                            onTap: () =>
+                                showPolicyDialog(context, isTermsOfUse: true),
+                            child: const Text(
+                              'شروط الاستخدام',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                          Text(
+                          const Text(
                             ' *',
                             style: TextStyle(fontSize: 13, color: Colors.red),
                           ),
@@ -192,21 +195,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                           ),
                           elevation: 0,
                         ),
-                        child: isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Text(
+                        child: const Text(
                                 'إنشاء حساب',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -261,6 +255,7 @@ class _SignUpPageState extends State<SignUpPage> {
     VoidCallback? onToggleVisibility,
     TextDirection? textDirection,
     TextInputType? keyboardType,
+    Widget? prefix,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,12 +281,19 @@ class _SignUpPageState extends State<SignUpPage> {
             filled: true,
             hintTextDirection: textDirection,
             hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
-            contentPadding: const EdgeInsets.symmetric(vertical: 8),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1.5),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
             ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 2),
+            prefixIcon: prefix,
+            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              borderSide: const BorderSide(color: Colors.black, width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              borderSide: const BorderSide(color: Colors.black, width: 2),
             ),
             suffixIcon: isPassword
                 ? IconButton(
@@ -308,16 +310,35 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Future<void> _selectCountryCode() async {
+    final CountryCode? selected = await showCountryCodePicker(context);
+    if (selected == null || !mounted) {
+      return;
+    }
+    setState(() => _countryCode = selected);
+  }
+
   void _handleSignup() {
     final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
-    final phone = _phoneController.text.trim();
+    final localPhone = _phoneController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (username.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (username.isEmpty || email.isEmpty || localPhone.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('الرجاء ملء جميع الحقول')),
+      );
+      return;
+    }
+
+    if (password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).tr('auth.password_too_short'),
+          ),
+        ),
       );
       return;
     }
@@ -338,12 +359,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
     context.read<SignupCubit>().signup(
           SignupEntity(
-            username: username,
+            fullName: username,
             email: email,
-            phone: phone,
+            phone: composeInternationalPhone(_countryCode.dialCode, localPhone),
             password: password,
-            confirmPassword: confirmPassword,
-            agreeToTerms: _agreeToTerms,
+            language: Localizations.localeOf(context).languageCode,
           ),
         );
   }

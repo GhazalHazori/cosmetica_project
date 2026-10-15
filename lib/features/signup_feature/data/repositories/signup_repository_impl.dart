@@ -16,21 +16,19 @@ class SignupRepositoryImpl implements SignupRepository {
   @override
   Future<Either<Failure, void>> signup(SignupEntity params) async {
     try {
-      final model = SignupModel(
-        username: params.username,
-        email: params.email,
-        phone: params.phone,
-        password: params.password,
-        confirmPassword: params.confirmPassword,
-        agreeToTerms: params.agreeToTerms,
-        accountType: params.accountType,
-      );
-      await _remoteDataSource.signup(model);
+      await _remoteDataSource.signup(SignupModel.fromEntity(params));
       return const Right(null);
     } on ServerException catch (e) {
+      // 409: the number already has an account, possibly one that was never
+      // verified — the user can resume its verification.
+      if (e.statusCode == 409) {
+        return Left(PhoneAlreadyRegisteredFailure(e.message));
+      }
       return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
     } catch (e) {
-      return Left(NetworkFailure(e.toString()));
+      return Left(ParsingFailure(e.toString()));
     }
   }
 }

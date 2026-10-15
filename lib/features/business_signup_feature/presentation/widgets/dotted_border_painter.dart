@@ -4,11 +4,13 @@ class DottedBorderPainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
   final double gap;
+  final double radius;
 
   const DottedBorderPainter({
     required this.color,
     this.strokeWidth = 1.0,
     this.gap = 4.0,
+    this.radius = 0,
   });
 
   @override
@@ -18,7 +20,13 @@ class DottedBorderPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
-    final Path path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    final Path path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          Radius.circular(radius),
+        ),
+      );
 
     for (final metric in path.computeMetrics()) {
       double distance = 0.0;

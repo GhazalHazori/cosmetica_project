@@ -90,7 +90,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
         title: 'أجهزة التجميل',
         children: const [
           CategoryEntity(id: 'skin_care_devices', title: 'أجهزة تنظيف البشرة'),
-          CategoryEntity(id: 'hair_removal_devices', title: 'أجهزة إزالة الشعر'),
+          // CategoryEntity(id: 'hair_removal_devices', title: 'أجهزة إزالة الشعر'),
         ],
       ),
     ];

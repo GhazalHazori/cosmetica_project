@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../payment_methods_feature/presentation/pages/payment_methods_screen.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -135,6 +136,8 @@ class _CartScreenState extends State<CartScreen> {
                           height: 48,
                           child: TextField(
                             controller: _couponController,
+                                          style: const TextStyle(fontSize: 13,color: Colors.black,fontFamily: 'Almarai',fontWeight: FontWeight.w400),
+
                             decoration: _inputDecoration(
                               'أدخل رمز القسيمة',
                               Icons.local_offer_outlined,
@@ -191,10 +194,15 @@ class _CartScreenState extends State<CartScreen> {
                                   context,
                                   PaymentMethodsScreen.routeName,
                                 );
-                              },
-                      style: _blackButtonStyle,
+                              },                      style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.black,
+    foregroundColor: Colors.white,
+    disabledBackgroundColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
+    elevation: 0,
+  ),
                       child: const Text(
-                        'إتمام عملية الشراء',
+                        'الذهاب إلى الدفع',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -203,6 +211,16 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ),
                   ),
+                  if (_cartItems.isNotEmpty && !_confirmData)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Center(
+                        child: Text(
+                          'يرجى تفعيل «تأكيد البيانات» للمتابعة إلى الدفع',
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -217,7 +235,7 @@ class _CartScreenState extends State<CartScreen> {
     backgroundColor: Colors.black,
     foregroundColor: Colors.white,
     disabledBackgroundColor: Colors.black26,
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
     elevation: 0,
   );
 
@@ -228,6 +246,7 @@ class _CartScreenState extends State<CartScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 1.2),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Directionality(
         textDirection: TextDirection.ltr,
@@ -362,6 +381,7 @@ class _CartScreenState extends State<CartScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 1.2),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,16 +477,17 @@ class _CartScreenState extends State<CartScreen> {
             padding: const EdgeInsets.only(bottom: 4),
             child: Text(
               label,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold,color: Colors.black,fontFamily: 'Almarai'),
             ),
           ),
           SizedBox(
             height: 40,
             child: TextField(
+              
               controller: controller,
               textDirection: textDirection,
               
-              style: const TextStyle(fontSize: 13),
+              style: const TextStyle(fontSize: 13,color: Colors.black,fontFamily: 'Almarai',fontWeight: FontWeight.w400),
               decoration: _inputDecoration(hint, null, textDirection),
             ),
           ),
@@ -484,16 +505,18 @@ class _CartScreenState extends State<CartScreen> {
       hintText: hint,
       hintTextDirection: textDirection,
       fillColor: Colors.white,
+    
       filled: true,
+      
       prefixIcon:
           icon == null ? null : Icon(icon, color: Colors.grey, size: 20),
-      hintStyle: const TextStyle(color: Colors.black26, fontSize: 12),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
+      hintStyle: const TextStyle(color: Color(0xff6B7280), fontSize: 14,fontFamily: 'Almarai',fontWeight: FontWeight.w400),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         borderSide: BorderSide(color: Colors.black, width: 1),
       ),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         borderSide: BorderSide(color: Colors.black, width: 1.5),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -506,6 +529,7 @@ class _CartScreenState extends State<CartScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 1.2),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
         children: [

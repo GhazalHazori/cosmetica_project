@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/error/failures.dart';
+import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/entities/login_entity.dart';
 import '../../domain/usecases/login_use_case.dart';
 
@@ -12,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._loginUseCase) : super(const LoginState.initial());
 
   Future<void> login(String identifier, String password) async {
-    emit(state.copyWith(status: LoginStatus.loading));
+    emit(const LoginState(status: LoginStatus.loading));
 
     final result = await _loginUseCase(
       LoginEntity(
@@ -21,14 +23,19 @@ class LoginCubit extends Cubit<LoginState> {
       ),
     );
 
+    if (isClosed) return;
+
     result.fold(
       (failure) => emit(
-        state.copyWith(
-          status: LoginStatus.failure,
+        LoginState(
+          status: failure is AccountPendingFailure
+              ? LoginStatus.accountPending
+              : LoginStatus.failure,
           errorMessage: failure.message,
+          identifier: identifier,
         ),
       ),
-      (_) => emit(const LoginState(status: LoginStatus.success)),
+      (user) => emit(LoginState(status: LoginStatus.success, user: user)),
     );
   }
 

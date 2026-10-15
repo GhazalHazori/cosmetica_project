@@ -24,13 +24,23 @@ class MainLayoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int initialIndex =
+        ModalRoute.of(context)?.settings.arguments as int? ?? 0;
+
     return BlocProvider(
-      create: (_) => sl<BottomNavCubit>(),
+      create: (_) => sl<BottomNavCubit>()..changeIndex(initialIndex),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: BlocBuilder<BottomNavCubit, int>(
           builder: (context, currentIndex) {
-            return Scaffold(
+            return PopScope(
+              canPop: currentIndex == 0,
+              onPopInvokedWithResult: (didPop, result) {
+                if (!didPop && currentIndex > 0) {
+                  context.read<BottomNavCubit>().changeIndex(currentIndex - 1);
+                }
+              },
+              child: Scaffold(
               backgroundColor: Colors.white,
               body: IndexedStack(index: currentIndex, children: _screens),
               bottomNavigationBar: Container(
@@ -78,7 +88,7 @@ class MainLayoutScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            );
+            ));
           },
         ),
       ),

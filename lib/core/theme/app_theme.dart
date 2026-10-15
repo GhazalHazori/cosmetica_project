@@ -75,23 +75,30 @@ class AppTheme {
           ),
         ),
       ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          ),
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colors.surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: BorderSide(color: colors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: BorderSide(color: colors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: BorderSide(color: colors.primary),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: BorderSide(color: colors.error),
         ),
         contentPadding: const EdgeInsets.symmetric(

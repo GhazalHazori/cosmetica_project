@@ -36,6 +36,8 @@ dependencies:
 
   # Storage (optional, ready for future use)
   shared_preferences: ^2.3.5
+  lottie: ^3.3.3
+  file_picker: ^11.0.3
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +52,7 @@ flutter:
     - lib/l10n/en.json
     - assets/video/
     - assets/images/
+    - assets/lottie/
 
   fonts:
     - family: Almarai

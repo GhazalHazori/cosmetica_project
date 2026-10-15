@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   const ProfileMenuItem({
@@ -34,7 +35,7 @@ class ProfileMenuItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: ListTile(
         onTap: onTap,
@@ -50,7 +51,7 @@ class ProfileMenuItem extends StatelessWidget {
           ),
         ),
         trailing: const Icon(
-          Icons.arrow_back_ios_new,
+          Icons.arrow_forward_ios,
           color: Color(0xFF0F172A),
           size: 16,
         ),

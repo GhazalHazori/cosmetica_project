@@ -8,29 +8,32 @@ import '../datasources/business_signup_remote_data_source.dart';
 import '../models/business_signup_model.dart';
 
 class BusinessSignupRepositoryImpl implements BusinessSignupRepository {
-  BusinessSignupRepositoryImpl({required BusinessSignupRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+  BusinessSignupRepositoryImpl({
+    required BusinessSignupRemoteDataSource remoteDataSource,
+  }) : _remoteDataSource = remoteDataSource;
 
   final BusinessSignupRemoteDataSource _remoteDataSource;
 
   @override
-  Future<Either<Failure, void>> businessSignup(BusinessSignupEntity params) async {
+  Future<Either<Failure, void>> businessSignup(
+    BusinessSignupEntity params,
+  ) async {
     try {
-      final model = BusinessSignupModel(
-        username: params.username,
-        email: params.email,
-        phone: params.phone,
-        password: params.password,
-        confirmPassword: params.confirmPassword,
-        commercialRegisterFile: params.commercialRegisterFile,
-        agreeToTerms: params.agreeToTerms,
+      await _remoteDataSource.businessSignup(
+        BusinessSignupModel.fromEntity(params),
       );
-      await _remoteDataSource.businessSignup(model);
       return const Right(null);
     } on ServerException catch (e) {
+      // 409: the number already has an account, possibly one that was never
+      // verified — the user can resume its verification.
+      if (e.statusCode == 409) {
+        return Left(PhoneAlreadyRegisteredFailure(e.message));
+      }
       return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
     } catch (e) {
-      return Left(NetworkFailure(e.toString()));
+      return Left(ParsingFailure(e.toString()));
     }
   }
 }

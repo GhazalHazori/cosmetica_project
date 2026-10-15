@@ -1,22 +1,23 @@
 import '../../domain/entities/otp_verification_entity.dart';
 
+/// Body of `POST /api/shop/auth/verify/`.
 class OtpVerificationModel extends OtpVerificationEntity {
   const OtpVerificationModel({
     required super.phoneNumber,
     required super.otpCode,
   });
 
-  factory OtpVerificationModel.fromJson(Map<String, dynamic> json) {
+  factory OtpVerificationModel.fromEntity(OtpVerificationEntity entity) {
     return OtpVerificationModel(
-      phoneNumber: json['phoneNumber'] as String,
-      otpCode: json['otpCode'] as String,
+      phoneNumber: entity.phoneNumber,
+      otpCode: entity.otpCode,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'phoneNumber': phoneNumber,
-      'otpCode': otpCode,
+      'phone': phoneNumber,
+      'code': otpCode,
     };
   }
 }

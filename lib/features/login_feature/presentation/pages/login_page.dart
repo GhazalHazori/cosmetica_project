@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/utils/phone_utils.dart';
+import '../../../../core/widgets/app_action_bottom_sheet.dart';
+import '../../../../core/widgets/app_loader.dart';
+import '../../../../core/widgets/country_code_picker.dart';
 import '../../../../di/injection_container.dart';
+import '../../../home_feature/presentation/pages/main_layout_screen.dart';
+import '../../../otp_verification_feature/presentation/pages/otp_verification_screen.dart';
+import '../../../reset_password_feature/presentation/pages/reset_password_screen.dart';
 import '../cubit/login_cubit.dart';
 import '../widgets/account_type_bottom_sheet.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class AppColors {
   static const Color primaryText = Color(0xFF1E2832);
@@ -25,6 +34,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isPasswordObscured = true;
+  CountryCode _countryCode = kDefaultCountryCode;
   final TextEditingController _identifierController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -36,13 +46,51 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _handleLogin() {
+  /// [context] must be below the page's BlocProvider.
+  void _handleLogin(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<LoginCubit>().login(
-            _identifierController.text.trim(),
+            composeInternationalPhone(
+              _countryCode.dialCode,
+              _identifierController.text,
+            ),
             _passwordController.text,
           );
     }
+  }
+
+  /// The account exists but is not active: offer to verify its number (a
+  /// code is sent only if it is awaiting verification).
+  Future<void> _offerVerification(BuildContext context, String phone) async {
+    final l10n = AppLocalizations.of(context);
+    final navigator = Navigator.of(context);
+    final verify = await showAppActionBottomSheet<bool>(
+      context,
+      icon: Icons.verified_user_outlined,
+      title: l10n.tr('pending.title'),
+      message: l10n.tr('pending.message'),
+      actions: [
+        AppSheetAction(
+          label: l10n.tr('pending.verify'),
+          value: true,
+          isPrimary: true,
+        ),
+        AppSheetAction(label: l10n.tr('common.close'), value: false),
+      ],
+    );
+    if (verify != true) return;
+    navigator.pushNamed(
+      OtpVerificationScreen.routeName,
+      arguments: OtpVerificationArgs(phoneNumber: phone, sendCode: true),
+    );
+  }
+
+  Future<void> _selectCountryCode() async {
+    final CountryCode? selected = await showCountryCodePicker(context);
+    if (selected == null || !mounted) {
+      return;
+    }
+    setState(() => _countryCode = selected);
   }
 
   @override
@@ -53,14 +101,29 @@ class _LoginPageState extends State<LoginPage> {
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
           if (state.status == LoginStatus.success) {
-            Navigator.pushReplacementNamed(context, '/sample');
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              MainLayoutScreen.routeName,
+              (route) => false,
+            );
+          } else if (state.status == LoginStatus.accountPending) {
+            _offerVerification(context, state.identifier ?? '');
           } else if (state.status == LoginStatus.failure) {
+            final message = state.errorMessage;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage ?? 'Login failed')),
+              SnackBar(
+                content: Text(
+                  message == null || message.isEmpty
+                      ? AppLocalizations.of(context).tr('auth.error_generic')
+                      : message,
+                ),
+              ),
             );
           }
         },
-        child: Scaffold( backgroundColor: Colors.white,
+        child: AppLoadingOverlay<LoginCubit, LoginState>(
+          isLoading: (state) => state.status == LoginStatus.loading,
+          child: Scaffold( backgroundColor: Colors.white,
           appBar: AppBar(
             leading: const CloseButton(),
             backgroundColor: Colors.white,
@@ -82,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        'البريد الإلكتروني أو رقم الهاتف المحمول',
+                        'رقم الهاتف المحمول',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.primaryText,
@@ -92,10 +155,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 8),
                     _buildTextFormField(
-                      hintText: 'XXXXXXXX أو 05example@domain.com',
-                      prefixIcon: null,
+                      hintText: '5XXXXXXXX',
+                      prefixIcon: CountryCodeSelector(
+                        country: _countryCode,
+                        onTap: _selectCountryCode,
+                      ),
                       isPassword: false,
-                
+                      keyboardType: TextInputType.phone,
+                      textDirection: TextDirection.ltr,
                       controller: _identifierController,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -146,7 +213,10 @@ class _LoginPageState extends State<LoginPage> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          ResetPasswordScreen.routeName,
+                        ),
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -165,26 +235,18 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (context, state) {
                         final isLoading = state.status == LoginStatus.loading;
                         return ElevatedButton(
-                          onPressed: isLoading ? null : _handleLogin,
+                          onPressed:
+                              isLoading ? null : () => _handleLogin(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.buttonBackground,
                             foregroundColor: AppColors.buttonText,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                             ),
                             elevation: 0,
                           ),
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: AppColors.buttonText,
-                                  ),
-                                )
-                              : const Text(
+                          child: const Text(
                                   'تسجيل الدخول',
                                   style: TextStyle(
                                     fontSize: 16,
@@ -232,6 +294,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
+        ),
       ),
     );
   }
@@ -246,20 +309,20 @@ Image.asset(
             width: 120,
             height: 120,
           ),
+          // Text(
+          //   'COSMETICA',
+          //   style: TextStyle(
+          //     fontSize: 32,
+          //     fontWeight: FontWeight.bold,
+          //     color: AppColors.accentText,
+          //     letterSpacing: 1.5,
+          //   ),
+          // ),
           Text(
-            'COSMETICA',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: AppColors.accentText,
-              letterSpacing: 1.5,
-            ),
-          ),
-          Text(
-            'عالم الجمال الفاخر بين يديك',
+            'جمالك موثوق ، جودة مضمونة ، توفير دائم.',
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.secondaryText,
+              color:Color(0xff64748B),
             ),
           ),
           const SizedBox(height: 48),
@@ -275,10 +338,14 @@ Image.asset(
     bool obscureText = false,
     TextEditingController? controller,
     String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    TextDirection? textDirection,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: isPassword ? obscureText : false,
+      keyboardType: keyboardType,
+      textDirection: textDirection,
       style: const TextStyle(fontSize: 14, color: AppColors.primaryText),
       validator: validator,
       decoration: InputDecoration(
@@ -288,15 +355,15 @@ Image.asset(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         prefixIcon: prefixIcon,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: const BorderSide(color: AppColors.inputBorder, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: const BorderSide(color: AppColors.inputBorder, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: const BorderSide(color: AppColors.primaryText, width: 1.5),
         ),
       ),

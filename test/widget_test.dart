@@ -7,12 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:cosmetica_project/main.dart';
 import 'package:cosmetica_project/di/injection_container.dart' as di;
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
     await di.init();
 
     // Build our app and trigger a frame.

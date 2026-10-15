@@ -1,37 +1,41 @@
+import 'package:dio/dio.dart';
+
 import '../../domain/entities/business_signup_entity.dart';
 
+/// Body of `POST /api/shop/auth/register/` for a business account.
+///
+/// Sent as `multipart/form-data` because it carries the commercial register.
 class BusinessSignupModel extends BusinessSignupEntity {
   const BusinessSignupModel({
-    required super.username,
-    required super.email,
+    required super.fullName,
     required super.phone,
     required super.password,
-    required super.confirmPassword,
-    super.commercialRegisterFile,
-    required super.agreeToTerms,
+    required super.commercialRegisterFilePath,
+    super.email,
+    super.language,
   });
 
-  factory BusinessSignupModel.fromJson(Map<String, dynamic> json) {
+  factory BusinessSignupModel.fromEntity(BusinessSignupEntity entity) {
     return BusinessSignupModel(
-      username: json['username'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      password: json['password'] as String,
-      confirmPassword: json['confirmPassword'] as String,
-      commercialRegisterFile: json['commercialRegisterFile'] as String?,
-      agreeToTerms: json['agreeToTerms'] as bool,
+      fullName: entity.fullName,
+      phone: entity.phone,
+      password: entity.password,
+      commercialRegisterFilePath: entity.commercialRegisterFilePath,
+      email: entity.email,
+      language: entity.language,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'username': username,
-      'email': email,
+  Future<FormData> toFormData() async {
+    return FormData.fromMap({
+      'full_name': fullName,
       'phone': phone,
       'password': password,
-      'confirmPassword': confirmPassword,
-      'commercialRegisterFile': commercialRegisterFile,
-      'agreeToTerms': agreeToTerms,
-    };
+      if (email != null && email!.isNotEmpty) 'email': email,
+      'language': language,
+      'is_business': 'true',
+      'commercial_register_document':
+          await MultipartFile.fromFile(commercialRegisterFilePath),
+    });
   }
 }

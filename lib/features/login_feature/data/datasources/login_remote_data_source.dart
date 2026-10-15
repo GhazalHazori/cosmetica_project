@@ -1,23 +1,31 @@
-import '../../../../core/error/exceptions.dart';
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_constants.dart';
+import '../../../../core/network/api_error_mapper.dart';
 import '../models/login_model.dart';
+import '../models/sign_in_response_model.dart';
 
 abstract class LoginRemoteDataSource {
-  Future<void> login(LoginModel params);
+  Future<SignInResponseModel> login(LoginModel params);
 }
 
 class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
-  LoginRemoteDataSourceImpl()
-      : _client = ApiClient(baseUrl: 'https://example.com/api');
+  LoginRemoteDataSourceImpl(this._client);
 
   final ApiClient _client;
 
+  /// Customers sign in with their mobile number or email address.
   @override
-  Future<void> login(LoginModel params) async {
+  Future<SignInResponseModel> login(LoginModel params) async {
     try {
-      await _client.post('/login', data: params.toJson());
-    } catch (e) {
-      throw ServerException(e.toString());
+      final response = await _client.post<Map<String, dynamic>>(
+        ApiConstants.signIn,
+        data: params.toJson(),
+      );
+      return SignInResponseModel.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw mapDioException(e);
     }
   }
 }

@@ -1,11 +1,15 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../di/injection_container.dart';
-import '../../../../features/otp_verification_feature/presentation/pages/otp_verification_screen.dart';
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/utils/phone_utils.dart';
+import '../../../../core/widgets/country_code_picker.dart';
 import '../../domain/entities/business_signup_entity.dart';
 import '../cubit/business_signup_cubit.dart';
 import '../widgets/dotted_border_painter.dart';
+import '../widgets/selected_document_tile.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class CompanySignUpPage extends StatefulWidget {
   const CompanySignUpPage({super.key});
@@ -26,28 +30,27 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  static const int _maxDocumentBytes = 10 * 1024 * 1024;
+
+  CountryCode _countryCode = kDefaultCountryCode;
   String? _selectedFileName;
+  String? _selectedFilePath;
+  int _selectedFileSize = 0;
 
   @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  // The cubit and its success / failure listener are provided by AppRouter.
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<BusinessSignupCubit>(),
-      child: BlocListener<BusinessSignupCubit, BusinessSignupState>(
-        listenWhen: (previous, current) => previous.status != current.status,
-        listener: (context, state) {
-          if (state.status == BusinessSignupStatus.success) {
-            Navigator.pushReplacementNamed(
-              context,
-              OtpVerificationScreen.routeName,
-              arguments: _phoneController.text.trim(),
-            );
-          } else if (state.status == BusinessSignupStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage ?? 'Signup failed')),
-            );
-          }
-        },
-        child: Directionality(
+    return Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
             appBar: AppBar(
@@ -66,24 +69,11 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                   children: [
                    
                     const SizedBox(height: 10),
-                    Center(
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        color: const Color(0xFFF5F5F5),
-                        child: const Center(
-                          child: Text(
-                            'COSMETICA',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  Center(
+                  child: Image.asset(
+                    "assets/images/cosmatica_logo.png",width: 100,height: 100,
+                  )
+                ),
                     const SizedBox(height: 24),
                     const Text(
                       'إنشاء حساب',
@@ -112,10 +102,14 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                     const SizedBox(height: 20),
                     _buildInputField(
                       label: 'رقم الهاتف المحمول',
-                      hint: '+966 50 000 0000',
+                      hint: '5X XXX XXXX',
                       controller: _phoneController,
                       textDirection: TextDirection.ltr,
                       keyboardType: TextInputType.phone,
+                      prefix: CountryCodeSelector(
+                        country: _countryCode,
+                        onTap: _selectCountryCode,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -165,21 +159,12 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,
                               foregroundColor: Colors.white,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                               ),
                               elevation: 0,
                             ),
-                            child: isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Text(
+                            child: const Text(
                                     'إنشاء حساب',
                                     style: TextStyle(
                                       fontSize: 16,
@@ -220,18 +205,72 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 
+  /// Any file type; no extension filter, which would grey out gallery
+  /// photos in the system picker.
+  Future<void> _pickCommercialRegister() async {
+    final result = await FilePicker.pickFiles(type: FileType.any);
+    final file = result?.files.single;
+    if (file == null || file.path == null || !mounted) {
+      return;
+    }
+    if (file.size > _maxDocumentBytes) {
+      _showMessage(AppLocalizations.of(context).tr('auth.document_too_large'));
+      return;
+    }
+    setState(() {
+      _selectedFileName = file.name;
+      _selectedFilePath = file.path;
+      _selectedFileSize = file.size;
+    });
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  void _removeCommercialRegister() {
+    setState(() {
+      _selectedFileName = null;
+      _selectedFilePath = null;
+      _selectedFileSize = 0;
+    });
+  }
+
+  Future<void> _selectCountryCode() async {
+    final CountryCode? selected = await showCountryCodePicker(context);
+    if (selected == null || !mounted) {
+      return;
+    }
+    setState(() => _countryCode = selected);
+  }
+
   Widget _buildFileUploadBox() {
+    final fileName = _selectedFileName;
+    final filePath = _selectedFilePath;
+    if (fileName != null && filePath != null) {
+      return SelectedDocumentTile(
+        fileName: fileName,
+        filePath: filePath,
+        fileSize: _selectedFileSize,
+        onChange: _pickCommercialRegister,
+        onRemove: _removeCommercialRegister,
+      );
+    }
+
     return InkWell(
-      onTap: () {
-        // TODO: integrate file picker
-      },
+      onTap: _pickCommercialRegister,
       child: CustomPaint(
-        painter: const DottedBorderPainter(color: Colors.black, strokeWidth: 1.2, gap: 4),
+        painter: const DottedBorderPainter(
+          color: Colors.black,
+          strokeWidth: 1.2,
+          gap: 4,
+          radius: AppSpacing.radiusMd,
+        ),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -253,9 +292,9 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
-                _selectedFileName ?? 'اضغط لرفع صورة أو ملف السجل التجاري',
-                style: const TextStyle(
+              const Text(
+                'اضغط لرفع صورة أو ملف السجل التجاري',
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -263,7 +302,7 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
               ),
               const SizedBox(height: 4),
               const Text(
-                '( PNG, JPG, PDF الحد الأقصى 10 ميجابايت )',
+                '( الحد الأقصى 10 ميجابايت )',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
@@ -285,6 +324,7 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
     VoidCallback? onToggleVisibility,
     TextDirection? textDirection,
     TextInputType? keyboardType,
+    Widget? prefix,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,12 +350,19 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
             filled: true,
             hintTextDirection: textDirection,
             hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
-            contentPadding: const EdgeInsets.symmetric(vertical: 8),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1.5),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
             ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 2),
+            prefixIcon: prefix,
+            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              borderSide: const BorderSide(color: Colors.black, width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              borderSide: const BorderSide(color: Colors.black, width: 2),
             ),
             suffixIcon: isPassword
                 ? IconButton(
@@ -335,17 +382,33 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
   void _handleSignup() {
     final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
-    final phone = _phoneController.text.trim();
+    final localPhone = _phoneController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+    final l10n = AppLocalizations.of(context);
 
     if (username.isEmpty ||
         email.isEmpty ||
-        phone.isEmpty ||
+        localPhone.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('الرجاء ملء جميع الحقول')),
+      );
+      return;
+    }
+
+    final documentPath = _selectedFilePath;
+    if (documentPath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.tr('auth.document_required'))),
+      );
+      return;
+    }
+
+    if (password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.tr('auth.password_too_short'))),
       );
       return;
     }
@@ -359,12 +422,12 @@ class _CompanySignUpPageState extends State<CompanySignUpPage> {
 
     context.read<BusinessSignupCubit>().businessSignup(
           BusinessSignupEntity(
-            username: username,
+            fullName: username,
             email: email,
-            phone: phone,
+            phone: composeInternationalPhone(_countryCode.dialCode, localPhone),
             password: password,
-            confirmPassword: confirmPassword,
-            agreeToTerms: true,
+            commercialRegisterFilePath: documentPath,
+            language: Localizations.localeOf(context).languageCode,
           ),
         );
   }

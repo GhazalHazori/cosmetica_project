@@ -18,3 +18,15 @@ class ParsingFailure extends Failure {
 }
 
 
+
+/// Registration refused because the mobile number already has an account
+/// (verified or still awaiting its code — the API does not say which).
+class PhoneAlreadyRegisteredFailure extends Failure {
+  const PhoneAlreadyRegisteredFailure(String message) : super(message);
+}
+
+/// Sign-in refused because the account is still pending: its number is not
+/// verified yet, or a business account awaits staff review.
+class AccountPendingFailure extends Failure {
+  const AccountPendingFailure(String message) : super(message);
+}

@@ -15,12 +15,13 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, ProfileEntity>> getProfile() async {
     try {
-      final result = await _remoteDataSource.getProfile();
-      return Right(result);
+      return Right(await _remoteDataSource.getProfile());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
     } catch (e) {
-      return Left(NetworkFailure(e.toString()));
+      return Left(ParsingFailure(e.toString()));
     }
   }
 }

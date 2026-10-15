@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../di/injection_container.dart';
 import '../cubit/payment_methods_cubit.dart';
 import '../widgets/dotted_border_painter.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class PaymentMethodsScreen extends StatelessWidget {
   const PaymentMethodsScreen({super.key});
@@ -112,7 +113,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                             backgroundColor: Colors.black,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                             ),
                             elevation: 0,
                           ),
@@ -158,7 +159,7 @@ class PaymentMethodsScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFF0F172A)
@@ -237,7 +238,7 @@ class PaymentMethodsScreen extends StatelessWidget {
         color: const Color(0xFFCBD5E1),
         strokeWidth: 1.2,
         gap: 4.0,
-        radius: 16.0,
+        radius: AppSpacing.radiusMd,
       ),
       child: Container(
         width: double.infinity,

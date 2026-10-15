@@ -16,7 +16,7 @@ class ThemeState {
 /// Persistence can be added later via a data source, but the Cubit interface
 /// must remain UI-agnostic.
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit() : super(const ThemeState(themeMode: ThemeMode.system));
+  ThemeCubit() : super(const ThemeState(themeMode: ThemeMode.light));
 
   void setLight() {
     emit(state.copyWith(themeMode: ThemeMode.light));
